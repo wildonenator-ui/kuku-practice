@@ -184,55 +184,55 @@
 
             if (gameState === 'menu') {
                 return (
-                    <div className="min-h-screen bg-gradient-to-br from-yellow-300 via-pink-300 to-purple-400 p-4 sm:p-8">
+                    <div className="min-h-screen bg-gradient-to-br from-yellow-300 via-pink-300 to-purple-400 p-4">
                         <div className="max-w-4xl mx-auto">
-                            <h1 className="text-4xl sm:text-6xl font-black text-center mb-8 sm:mb-12 text-white drop-shadow-lg">
+                            <h1 className="text-5xl font-black text-center mb-8 text-white drop-shadow-lg">
                                 🎯 九九れんしゅう 🎯
                             </h1>
                             
-                            <div className="bg-white rounded-3xl shadow-2xl p-4 sm:p-8 mb-6 sm:mb-8">
-                                <h2 className="text-2xl sm:text-3xl font-bold mb-4 sm:mb-6 text-gray-800">
+                            <div className="bg-white rounded-3xl shadow-2xl p-4 mb-6">
+                                <h2 className="text-2xl font-bold mb-4 text-gray-800">
                                     🎮 れんしゅうモード
                                 </h2>
-                                <div className="grid grid-cols-3 gap-2 sm:gap-4 mb-6 sm:mb-8">
+                                <div className="grid grid-cols-3 gap-2 mb-6">
                                     <button
                                         onClick={() => setMode('あがり')}
-                                        className={`p-3 sm:p-6 rounded-2xl text-lg sm:text-2xl font-bold transition-all transform active:scale-95 ${
+                                        className={`p-4 rounded-2xl text-lg font-bold transition-all transform active:scale-95 ${
                                             mode === 'あがり' 
                                                 ? 'bg-gradient-to-br from-green-400 to-green-600 text-white shadow-lg' 
                                                 : 'bg-gray-100 text-gray-700'
                                         }`}>
-                                        ⬆️ あがり<br/><span className="text-xs sm:text-sm">(1→9)</span>
+                                        ⬆️ あがり<br/><span className="text-xs">(1→9)</span>
                                     </button>
                                     <button
                                         onClick={() => setMode('さがり')}
-                                        className={`p-3 sm:p-6 rounded-2xl text-lg sm:text-2xl font-bold transition-all transform active:scale-95 ${
+                                        className={`p-4 rounded-2xl text-lg font-bold transition-all transform active:scale-95 ${
                                             mode === 'さがり' 
                                                 ? 'bg-gradient-to-br from-blue-400 to-blue-600 text-white shadow-lg' 
                                                 : 'bg-gray-100 text-gray-700'
                                         }`}>
-                                        ⬇️ さがり<br/><span className="text-xs sm:text-sm">(9→1)</span>
+                                        ⬇️ さがり<br/><span className="text-xs">(9→1)</span>
                                     </button>
                                     <button
                                         onClick={() => setMode('ばら')}
-                                        className={`p-3 sm:p-6 rounded-2xl text-lg sm:text-2xl font-bold transition-all transform active:scale-95 ${
+                                        className={`p-4 rounded-2xl text-lg font-bold transition-all transform active:scale-95 ${
                                             mode === 'ばら' 
                                                 ? 'bg-gradient-to-br from-purple-400 to-purple-600 text-white shadow-lg' 
                                                 : 'bg-gray-100 text-gray-700'
                                         }`}>
-                                        🎲 ばら<br/><span className="text-xs sm:text-sm">(ランダム)</span>
+                                        🎲 ばら<br/><span className="text-xs">(ランダム)</span>
                                     </button>
                                 </div>
 
-                                <h2 className="text-2xl sm:text-3xl font-bold mb-4 sm:mb-6 text-gray-800">
+                                <h2 className="text-2xl font-bold mb-4 text-gray-800">
                                     📊 だんをえらぶ
                                 </h2>
-                                <div className="grid grid-cols-3 sm:grid-cols-5 gap-2 sm:gap-3 mb-4 sm:mb-6">
+                                <div className="grid grid-cols-3 gap-2 mb-4">
                                     {[1, 2, 3, 4, 5, 6, 7, 8, 9].map(dan => (
                                         <button
                                             key={dan}
                                             onClick={() => setDanSelection(dan)}
-                                            className={`p-3 sm:p-6 rounded-2xl text-lg sm:text-2xl font-bold transition-all transform active:scale-95 ${
+                                            className={`p-4 rounded-2xl text-xl font-bold transition-all transform active:scale-95 ${
                                                 danSelection === dan 
                                                     ? 'bg-gradient-to-br from-orange-400 to-orange-600 text-white shadow-lg' 
                                                     : 'bg-gray-100 text-gray-700'
@@ -242,24 +242,24 @@
                                     ))}
                                 </div>
                                 
-                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-4">
+                                <div className="grid grid-cols-1 gap-2">
                                     <button
                                         onClick={() => setDanSelection('all-順番')}
-                                        className={`p-4 sm:p-6 rounded-2xl text-base sm:text-xl font-bold transition-all transform active:scale-95 ${
+                                        className={`p-4 rounded-2xl text-base font-bold transition-all transform active:scale-95 ${
                                             danSelection === 'all-順番' 
                                                 ? 'bg-gradient-to-br from-teal-400 to-teal-600 text-white shadow-lg' 
                                                 : 'bg-gray-100 text-gray-700'
                                         }`}>
-                                        🔢 ぜんぶ(じゅんばん)<br/><span className="text-xs sm:text-sm">(1→2→...→9)</span>
+                                        🔢 ぜんぶ(じゅんばん)<br/><span className="text-xs">(1→2→...→9)</span>
                                     </button>
                                     <button
                                         onClick={() => setDanSelection('all-ランダム')}
-                                        className={`p-4 sm:p-6 rounded-2xl text-base sm:text-xl font-bold transition-all transform active:scale-95 ${
+                                        className={`p-4 rounded-2xl text-base font-bold transition-all transform active:scale-95 ${
                                             danSelection === 'all-ランダム' 
                                                 ? 'bg-gradient-to-br from-rose-400 to-rose-600 text-white shadow-lg' 
                                                 : 'bg-gray-100 text-gray-700'
                                         }`}>
-                                        🎰 ぜんぶ(ランダム)<br/><span className="text-xs sm:text-sm">(だんもバラバラ)</span>
+                                        🎰 ぜんぶ(ランダム)<br/><span className="text-xs">(だんもバラバラ)</span>
                                     </button>
                                 </div>
                             </div>
@@ -267,7 +267,7 @@
                             <button
                                 onClick={() => mode && danSelection && startGame(mode, danSelection)}
                                 disabled={!mode || !danSelection}
-                                className={`w-full p-6 sm:p-8 rounded-3xl text-3xl sm:text-4xl font-black transition-all transform shadow-2xl active:scale-95 ${
+                                className={`w-full p-6 rounded-3xl text-3xl font-black transition-all transform shadow-2xl active:scale-95 ${
                                     mode && danSelection
                                         ? 'bg-gradient-to-r from-pink-500 to-red-500 text-white'
                                         : 'bg-gray-300 text-gray-500'
@@ -290,32 +290,32 @@
                     <div className="min-h-screen bg-gradient-to-br from-blue-400 via-purple-400 to-pink-400 p-3 flex flex-col">
                         <div className="max-w-3xl mx-auto w-full flex-1 flex flex-col">
                             {/* 問題表示エリア */}
-                            <div className={`bg-white rounded-3xl shadow-2xl p-3 sm:p-4 transition-all duration-300 no-select mb-2 flex-shrink-0 ${
+                            <div className={`bg-white rounded-3xl shadow-2xl p-3 transition-all duration-300 no-select mb-2 flex-shrink-0 ${
                                 feedback === 'correct' ? 'bg-green-100' : 
                                 feedback === 'wrong' ? 'bg-red-100' : ''
                             }`}>
                                 <div className="text-center">
-                                    <div className="text-base sm:text-xl font-bold text-purple-600 mb-1 sm:mb-2">
+                                    <div className="text-base font-bold text-purple-600 mb-1">
                                         {currentDan}のだん - {mode}
                                     </div>
-                                    <div className="text-4xl sm:text-6xl font-black text-gray-800 mb-2 sm:mb-3">
+                                    <div className="text-5xl font-black text-gray-800 mb-2">
                                         {currentQuestion.dan} × {currentQuestion.multiplier} = ?
                                     </div>
                                     
-                                    <div className="text-3xl sm:text-5xl font-bold text-center w-full p-2 sm:p-3 border-4 border-purple-400 rounded-2xl mb-2 sm:mb-3 min-h-[60px] sm:min-h-[70px] flex items-center justify-center bg-white">
+                                    <div className="text-4xl font-bold text-center w-full p-2 border-4 border-purple-400 rounded-2xl mb-2 flex items-center justify-center bg-white" style={{ minHeight: '60px' }}>
                                         {userAnswer || '　'}
                                     </div>
 
                                     {feedback === 'correct' && (
-                                        <div className="text-3xl sm:text-5xl font-black text-green-600">
+                                        <div className="text-4xl font-black text-green-600">
                                             🎉 せいかい！ 🎉
                                         </div>
                                     )}
                                     
                                     {feedback === 'wrong' && (
-                                        <div className="text-xl sm:text-3xl font-bold text-red-600">
+                                        <div className="text-2xl font-bold text-red-600">
                                             ❌ ざんねん<br/>
-                                            <span className="text-lg sm:text-2xl">こたえは {currentQuestion.answer} だよ</span>
+                                            <span className="text-xl">こたえは {currentQuestion.answer} だよ</span>
                                         </div>
                                     )}
                                 </div>
@@ -329,7 +329,8 @@
                                             <button
                                                 key={num}
                                                 onClick={() => handleNumberPad(num)}
-                                                className="h-14 sm:h-16 bg-gradient-to-br from-blue-400 to-blue-600 text-white rounded-xl text-2xl sm:text-3xl font-black shadow-lg transition-all transform active:scale-95 active:shadow-sm">
+                                                style={{ height: '50px' }}
+                                                className="bg-gradient-to-br from-blue-400 to-blue-600 text-white rounded-xl text-2xl font-black shadow-lg transition-all transform active:scale-95 active:shadow-sm">
                                                 {num}
                                             </button>
                                         ))}
@@ -337,24 +338,27 @@
                                     <div className="grid grid-cols-3 gap-2 mb-2 max-w-sm mx-auto">
                                         <button
                                             onClick={handleClear}
-                                            className="h-14 sm:h-16 bg-gradient-to-br from-gray-400 to-gray-600 text-white rounded-xl text-sm sm:text-base font-black shadow-lg transition-all transform active:scale-95 active:shadow-sm">
+                                            style={{ height: '50px' }}
+                                            className="bg-gradient-to-br from-gray-400 to-gray-600 text-white rounded-xl text-sm font-black shadow-lg transition-all transform active:scale-95 active:shadow-sm">
                                             クリア
                                         </button>
                                         <button
                                             onClick={() => handleNumberPad(0)}
-                                            className="h-14 sm:h-16 bg-gradient-to-br from-blue-400 to-blue-600 text-white rounded-xl text-2xl sm:text-3xl font-black shadow-lg transition-all transform active:scale-95 active:shadow-sm">
+                                            style={{ height: '50px' }}
+                                            className="bg-gradient-to-br from-blue-400 to-blue-600 text-white rounded-xl text-2xl font-black shadow-lg transition-all transform active:scale-95 active:shadow-sm">
                                             0
                                         </button>
                                         <button
                                             onClick={handleBackspace}
-                                            className="h-14 sm:h-16 bg-gradient-to-br from-red-400 to-red-600 text-white rounded-xl text-lg sm:text-xl font-black shadow-lg transition-all transform active:scale-95 active:shadow-sm">
+                                            style={{ height: '50px' }}
+                                            className="bg-gradient-to-br from-red-400 to-red-600 text-white rounded-xl text-lg font-black shadow-lg transition-all transform active:scale-95 active:shadow-sm">
                                             ←
                                         </button>
                                     </div>
                                     <button
                                         onClick={checkAnswer}
                                         disabled={!userAnswer}
-                                        className={`w-full max-w-sm mx-auto block px-6 py-3 sm:py-4 rounded-xl text-xl sm:text-2xl font-black transition-all transform active:scale-95 ${
+                                        className={`w-full max-w-sm mx-auto block px-6 py-3 rounded-xl text-xl font-black transition-all transform active:scale-95 ${
                                             userAnswer
                                                 ? 'bg-gradient-to-r from-green-400 to-green-600 text-white shadow-xl'
                                                 : 'bg-gray-300 text-gray-500'
@@ -365,8 +369,8 @@
                             )}
 
                             {/* 下部情報バー */}
-                            <div className="bg-white rounded-3xl shadow-2xl p-2 sm:p-3 mt-auto flex-shrink-0">
-                                <div className="flex justify-between items-center mb-2 flex-wrap gap-2 text-xs sm:text-sm">
+                            <div className="bg-white rounded-3xl shadow-2xl p-2 mt-auto flex-shrink-0">
+                                <div className="flex justify-between items-center mb-2 flex-wrap gap-2 text-xs">
                                     <div className="font-bold text-gray-800">
                                         ⏱️ {formatTime(elapsedTime)}
                                     </div>
@@ -380,7 +384,7 @@
                                 </div>
                                 <button
                                     onClick={() => setGameState('result')}
-                                    className="w-full px-3 py-1.5 sm:py-2 rounded-xl text-sm sm:text-base font-bold bg-gradient-to-r from-gray-400 to-gray-600 text-white transition-all transform active:scale-95 shadow-lg">
+                                    className="w-full px-3 py-2 rounded-xl text-sm font-bold bg-gradient-to-r from-gray-400 to-gray-600 text-white transition-all transform active:scale-95 shadow-lg">
                                     🚪 しゅうりょう
                                 </button>
                             </div>
@@ -394,86 +398,86 @@
                 const accuracy = totalQuestions > 0 ? Math.round((correctCount / totalQuestions) * 100) : 0;
                 
                 return (
-                    <div className="min-h-screen bg-gradient-to-br from-green-300 via-blue-300 to-purple-400 p-4 sm:p-8">
+                    <div className="min-h-screen bg-gradient-to-br from-green-300 via-blue-300 to-purple-400 p-4">
                         <div className="max-w-3xl mx-auto">
-                            <div className="bg-white rounded-3xl shadow-2xl p-6 sm:p-12 text-center">
-                                <div className="text-6xl sm:text-8xl mb-4 sm:mb-6">🏆</div>
-                                <h1 className="text-4xl sm:text-6xl font-black mb-6 sm:mb-8 text-gray-800">
+                            <div className="bg-white rounded-3xl shadow-2xl p-6 text-center">
+                                <div className="text-6xl mb-4">🏆</div>
+                                <h1 className="text-4xl font-black mb-6 text-gray-800">
                                     おつかれさま！
                                 </h1>
                                 
-                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-8 mb-6 sm:mb-8">
-                                    <div className="bg-gradient-to-br from-blue-100 to-blue-200 p-6 sm:p-8 rounded-2xl">
-                                        <div className="text-xl sm:text-2xl font-bold text-blue-800 mb-2">
+                                <div className="grid grid-cols-1 gap-4 mb-6">
+                                    <div className="bg-gradient-to-br from-blue-100 to-blue-200 p-6 rounded-2xl">
+                                        <div className="text-xl font-bold text-blue-800 mb-2">
                                             ⏱️ タイム
                                         </div>
-                                        <div className="text-3xl sm:text-5xl font-black text-blue-900">
+                                        <div className="text-4xl font-black text-blue-900">
                                             {formatTime(elapsedTime)}
                                         </div>
                                     </div>
                                     
-                                    <div className="bg-gradient-to-br from-purple-100 to-purple-200 p-6 sm:p-8 rounded-2xl">
-                                        <div className="text-xl sm:text-2xl font-bold text-purple-800 mb-2">
+                                    <div className="bg-gradient-to-br from-purple-100 to-purple-200 p-6 rounded-2xl">
+                                        <div className="text-xl font-bold text-purple-800 mb-2">
                                             📊 せいかいりつ
                                         </div>
-                                        <div className="text-3xl sm:text-5xl font-black text-purple-900">
+                                        <div className="text-4xl font-black text-purple-900">
                                             {accuracy}%
                                         </div>
                                     </div>
                                 </div>
 
-                                <div className="grid grid-cols-3 gap-3 sm:gap-6 mb-6 sm:mb-8">
-                                    <div className="bg-green-100 p-4 sm:p-6 rounded-2xl">
-                                        <div className="text-base sm:text-xl font-bold text-green-800 mb-2">
+                                <div className="grid grid-cols-3 gap-3 mb-6">
+                                    <div className="bg-green-100 p-4 rounded-2xl">
+                                        <div className="text-base font-bold text-green-800 mb-2">
                                             ⭕ せいかい
                                         </div>
-                                        <div className="text-2xl sm:text-4xl font-black text-green-900">
+                                        <div className="text-3xl font-black text-green-900">
                                             {correctCount}
                                         </div>
                                     </div>
                                     
-                                    <div className="bg-red-100 p-4 sm:p-6 rounded-2xl">
-                                        <div className="text-base sm:text-xl font-bold text-red-800 mb-2">
+                                    <div className="bg-red-100 p-4 rounded-2xl">
+                                        <div className="text-base font-bold text-red-800 mb-2">
                                             ❌ まちがい
                                         </div>
-                                        <div className="text-2xl sm:text-4xl font-black text-red-900">
+                                        <div className="text-3xl font-black text-red-900">
                                             {wrongCount}
                                         </div>
                                     </div>
                                     
-                                    <div className="bg-yellow-100 p-4 sm:p-6 rounded-2xl">
-                                        <div className="text-base sm:text-xl font-bold text-yellow-800 mb-2">
+                                    <div className="bg-yellow-100 p-4 rounded-2xl">
+                                        <div className="text-base font-bold text-yellow-800 mb-2">
                                             📝 もんだい
                                         </div>
-                                        <div className="text-2xl sm:text-4xl font-black text-yellow-900">
+                                        <div className="text-3xl font-black text-yellow-900">
                                             {totalQuestions}
                                         </div>
                                     </div>
                                 </div>
 
                                 {accuracy === 100 && (
-                                    <div className="text-3xl sm:text-5xl font-black text-yellow-500 mb-6 sm:mb-8">
+                                    <div className="text-4xl font-black text-yellow-500 mb-6">
                                         🎊 パーフェクト！ 🎊
                                     </div>
                                 )}
 
                                 {wrongAnswers.length > 0 && (
-                                    <div className="bg-red-50 rounded-2xl p-4 sm:p-6 mb-6 sm:mb-8 text-left">
-                                        <h2 className="text-2xl sm:text-3xl font-black text-red-700 mb-4 text-center">
+                                    <div className="bg-red-50 rounded-2xl p-4 mb-6 text-left">
+                                        <h2 className="text-2xl font-black text-red-700 mb-4 text-center">
                                             ❌ まちがえたもんだい
                                         </h2>
                                         <div className="space-y-2 max-h-60 overflow-y-auto">
                                             {wrongAnswers.map((wrong, index) => (
-                                                <div key={index} className="bg-white rounded-xl p-3 sm:p-4 shadow">
+                                                <div key={index} className="bg-white rounded-xl p-3 shadow">
                                                     <div className="flex justify-between items-center flex-wrap gap-2">
-                                                        <span className="text-xl sm:text-2xl font-bold text-gray-800">
+                                                        <span className="text-lg font-bold text-gray-800">
                                                             {wrong.question} = ?
                                                         </span>
                                                         <div className="flex items-center gap-3">
-                                                            <span className="text-lg sm:text-xl text-red-600 font-bold">
+                                                            <span className="text-base text-red-600 font-bold">
                                                                 あなた: {wrong.userAnswer}
                                                             </span>
-                                                            <span className="text-lg sm:text-xl text-green-600 font-bold">
+                                                            <span className="text-base text-green-600 font-bold">
                                                                 せいかい: {wrong.correctAnswer}
                                                             </span>
                                                         </div>
@@ -490,7 +494,7 @@
                                         setMode(null);
                                         setDanSelection(null);
                                     }}
-                                    className="w-full p-6 sm:p-8 rounded-3xl text-2xl sm:text-4xl font-black bg-gradient-to-r from-pink-500 to-red-500 text-white transition-all transform active:scale-95 shadow-2xl">
+                                    className="w-full p-6 rounded-3xl text-3xl font-black bg-gradient-to-r from-pink-500 to-red-500 text-white transition-all transform active:scale-95 shadow-2xl">
                                     🔄 もういちど
                                 </button>
                             </div>
