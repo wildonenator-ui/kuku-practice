@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <title>九九れんしゅう</title>
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
+        }
+        body {
+            font-family: 'Fredoka', 'Comic Sans MS', cursive;
+            overflow-x: hidden;
+        }
+        input[type="number"]::-webkit-inner-spin-button,
+        input[type="number"]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        input[type="number"] {
+            -moz-appearance: textfield;
+        }
+        .no-select {
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect, useRef } = React;
+
+        function KukuPractice() {
+            const [mode, setMode] = useState(null);
+            const [danSelection, setDanSelection] = useState(null);
+            const [gameState, setGameState] = useState('menu');
+            const [currentDan, setCurrentDan] = useState(1);
+            const [currentIndex, setCurrentIndex] = useState(0);
+            const [questions, setQuestions] = useState([]);
+            const [userAnswer, setUserAnswer] = useState('');
+            const [correctCount, setCorrectCount] = useState(0);
+            const [wrongCount, setWrongCount] = useState(0);
+            const [startTime, setStartTime] = useState(null);
+            const [elapsedTime, setElapsedTime] = useState(0);
+            const [feedback, setFeedback] = useState(null);
+            const [allDanOrder, setAllDanOrder] = useState([]);
+
+            useEffect(() => {
+                let interval;
+                if (gameState === 'playing' && startTime) {
+                    interval = setInterval(() => {
+                        setElapsedTime(Date.now() - startTime);
+                    }, 100);
+                }
+                return () => clearInterval(interval);
+            }, [gameState, startTime]);
+
+            const generateQuestions = (mode, dan) => {
+                let numbers = [];
+                if (mode === 'あがり') {
+                    numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+                } else if (mode === 'さがり') {
+                    numbers = [9, 8, 7, 6, 5, 4, 3, 2, 1];
+                } else if (mode === 'ばら') {
+                    numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9].sort(() => Math.random() - 0.5);
+                }
+                return numbers.map(num => ({
+                    dan: dan,
+                    multiplier: num,
+                    answer: dan * num
+                }));
+            };
+
+            const startGame = (selectedMode, selectedDan) => {
+                setMode(selectedMode);
+                setDanSelection(selectedDan);
+                setCorrectCount(0);
+                setWrongCount(0);
+                setCurrentIndex(0);
+                setUserAnswer('');
+                setFeedback(null);
+                setStartTime(Date.now());
+                setElapsedTime(0);
+
+                if (selectedDan === 'all-順番') {
+                    const order = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+                    setAllDanOrder(order);
+                    setCurrentDan(1);
+                    setQuestions(generateQuestions(selectedMode, 1));
+                } else if (selectedDan === 'all-ランダム') {
+                    const order = [1, 2, 3, 4, 5, 6, 7, 8, 9].sort(() => Math.random() - 0.5);
+                    setAllDanOrder(order);
+                    setCurrentDan(order[0]);
+                    setQuestions(generateQuestions(selectedMode, order[0]));
+                } else {
+                    setCurrentDan(selectedDan);
+                    setQuestions(generateQuestions(selectedMode, selectedDan));
+                }
+                setGameState('playing');
+            };
+
+            const checkAnswer = () => {
+                if (!userAnswer) return;
+                
+                const currentQuestion = questions[currentIndex];
+                const correct = parseInt(userAnswer) === currentQuestion.answer;
+                setFeedback(correct ? 'correct' : 'wrong');
+                
+                if (correct) {
+                    setCorrectCount(prev => prev + 1);
+                } else {
+                    setWrongCount(prev => prev + 1);
+                }
+
+                setTimeout(() => {
+                    if (currentIndex < questions.length - 1) {
+                        setCurrentIndex(prev => prev + 1);
+                        setUserAnswer('');
+                        setFeedback(null);
+                    } else {
+                        if (danSelection === 'all-順番' || danSelection === 'all-ランダム') {
+                            const currentDanIndex = allDanOrder.indexOf(currentDan);
+                            if (currentDanIndex < allDanOrder.length - 1) {
+                                const nextDan = allDanOrder[currentDanIndex + 1];
+                                setCurrentDan(nextDan);
+                                setQuestions(generateQuestions(mode, nextDan));
+                                setCurrentIndex(0);
+                                setUserAnswer('');
+                                setFeedback(null);
+                            } else {
+                                setGameState('result');
+                            }
+                        } else {
+                            setGameState('result');
+                        }
+                    }
+                }, 800);
+            };
+
+            const formatTime = (ms) => {
+                const seconds = Math.floor(ms / 1000);
+                const minutes = Math.floor(seconds / 60);
+                const remainingSeconds = seconds % 60;
+                const centiseconds = Math.floor((ms % 1000) / 10);
+                return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}.${centiseconds.toString().padStart(2, '0')}`;
+            };
+
+            const handleNumberPad = (num) => {
+                if (feedback !== null) return;
+                setUserAnswer(prev => prev + num.toString());
+            };
+
+            const handleBackspace = () => {
+                if (feedback !== null) return;
+                setUserAnswer(prev => prev.slice(0, -1));
+            };
+
+            const handleClear = () => {
+                if (feedback !== null) return;
+                setUserAnswer('');
+            };
+
+            if (gameState === 'menu') {
+                return (
+                    <div className="min-h-screen bg-gradient-to-br from-yellow-300 via-pink-300 to-purple-400 p-4 sm:p-8">
+                        <div className="max-w-4xl mx-auto">
+                            <h1 className="text-4xl sm:text-6xl font-black text-center mb-8 sm:mb-12 text-white drop-shadow-lg">
+                                🎯 九九れんしゅう 🎯
+                            </h1>
+                            
+                            <div className="bg-white rounded-3xl shadow-2xl p-4 sm:p-8 mb-6 sm:mb-8">
+                                <h2 className="text-2xl sm:text-3xl font-bold mb-4 sm:mb-6 text-gray-800">
+                                    🎮 れんしゅうモード
+                                </h2>
+                                <div className="grid grid-cols-3 gap-2 sm:gap-4 mb-6 sm:mb-8">
+                                    <button
+                                        onClick={() => setMode('あがり')}
+                                        className={`p-3 sm:p-6 rounded-2xl text-lg sm:text-2xl font-bold transition-all transform active:scale-95 ${
+                                            mode === 'あがり' 
+                                                ? 'bg-gradient-to-br from-green-400 to-green-600 text-white shadow-lg' 
+                                                : 'bg-gray-100 text-gray-700'
+                                        }`}>
+                                        ⬆️ あがり<br/><span className="text-xs sm:text-sm">(1→9)</span>
+                                    </button>
+                                    <button
+                                        onClick={() => setMode('さがり')}
+                                        className={`p-3 sm:p-6 rounded-2xl text-lg sm:text-2xl font-bold transition-all transform active:scale-95 ${
+                                            mode === 'さがり' 
+                                                ? 'bg-gradient-to-br from-blue-400 to-blue-600 text-white shadow-lg' 
+                                                : 'bg-gray-100 text-gray-700'
+                                        }`}>
+                                        ⬇️ さがり<br/><span className="text-xs sm:text-sm">(9→1)</span>
+                                    </button>
+                                    <button
+                                        onClick={() => setMode('ばら')}
+                                        className={`p-3 sm:p-6 rounded-2xl text-lg sm:text-2xl font-bold transition-all transform active:scale-95 ${
+                                            mode === 'ばら' 
+                                                ? 'bg-gradient-to-br from-purple-400 to-purple-600 text-white shadow-lg' 
+                                                : 'bg-gray-100 text-gray-700'
+                                        }`}>
+                                        🎲 ばら<br/><span className="text-xs sm:text-sm">(ランダム)</span>
+                                    </button>
+                                </div>
+
+                                <h2 className="text-2xl sm:text-3xl font-bold mb-4 sm:mb-6 text-gray-800">
+                                    📊 だんをえらぶ
+                                </h2>
+                                <div className="grid grid-cols-3 sm:grid-cols-5 gap-2 sm:gap-3 mb-4 sm:mb-6">
+                                    {[1, 2, 3, 4, 5, 6, 7, 8, 9].map(dan => (
+                                        <button
+                                            key={dan}
+                                            onClick={() => setDanSelection(dan)}
+                                            className={`p-3 sm:p-6 rounded-2xl text-lg sm:text-2xl font-bold transition-all transform active:scale-95 ${
+                                                danSelection === dan 
+                                                    ? 'bg-gradient-to-br from-orange-400 to-orange-600 text-white shadow-lg' 
+                                                    : 'bg-gray-100 text-gray-700'
+                                            }`}>
+                                            {dan}のだん
+                                        </button>
+                                    ))}
+                                </div>
+                                
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-4">
+                                    <button
+                                        onClick={() => setDanSelection('all-順番')}
+                                        className={`p-4 sm:p-6 rounded-2xl text-base sm:text-xl font-bold transition-all transform active:scale-95 ${
+                                            danSelection === 'all-順番' 
+                                                ? 'bg-gradient-to-br from-teal-400 to-teal-600 text-white shadow-lg' 
+                                                : 'bg-gray-100 text-gray-700'
+                                        }`}>
+                                        🔢 ぜんぶ(じゅんばん)<br/><span className="text-xs sm:text-sm">(1→2→...→9)</span>
+                                    </button>
+                                    <button
+                                        onClick={() => setDanSelection('all-ランダム')}
+                                        className={`p-4 sm:p-6 rounded-2xl text-base sm:text-xl font-bold transition-all transform active:scale-95 ${
+                                            danSelection === 'all-ランダム' 
+                                                ? 'bg-gradient-to-br from-rose-400 to-rose-600 text-white shadow-lg' 
+                                                : 'bg-gray-100 text-gray-700'
+                                        }`}>
+                                        🎰 ぜんぶ(ランダム)<br/><span className="text-xs sm:text-sm">(だんもバラバラ)</span>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <button
+                                onClick={() => mode && danSelection && startGame(mode, danSelection)}
+                                disabled={!mode || !danSelection}
+                                className={`w-full p-6 sm:p-8 rounded-3xl text-3xl sm:text-4xl font-black transition-all transform shadow-2xl active:scale-95 ${
+                                    mode && danSelection
+                                        ? 'bg-gradient-to-r from-pink-500 to-red-500 text-white'
+                                        : 'bg-gray-300 text-gray-500'
+                                }`}>
+                                ▶️ スタート！
+                            </button>
+                        </div>
+                    </div>
+                );
+            }
+
+            if (gameState === 'playing' && questions[currentIndex]) {
+                const currentQuestion = questions[currentIndex];
+                const totalQuestions = (danSelection === 'all-順番' || danSelection === 'all-ランダム') ? 81 : 9;
+                const currentProgress = (danSelection === 'all-順番' || danSelection === 'all-ランダム')
+                    ? (allDanOrder.indexOf(currentDan) * 9 + currentIndex + 1)
+                    : (currentIndex + 1);
+
+                return (
+                    <div className="min-h-screen bg-gradient-to-br from-blue-400 via-purple-400 to-pink-400 p-4">
+                        <div className="max-w-3xl mx-auto">
+                            <div className="bg-white rounded-3xl shadow-2xl p-4 mb-4">
+                                <div className="flex justify-between items-center mb-3 flex-wrap gap-2">
+                                    <div className="text-lg sm:text-2xl font-bold text-gray-800">
+                                        ⏱️ {formatTime(elapsedTime)}
+                                    </div>
+                                    <div className="text-base sm:text-xl font-bold text-gray-700">
+                                        {currentProgress} / {totalQuestions}もんめ
+                                    </div>
+                                    <div className="flex gap-3 text-base sm:text-lg font-bold">
+                                        <span className="text-green-600">⭕ {correctCount}</span>
+                                        <span className="text-red-600">❌ {wrongCount}</span>
+                                    </div>
+                                </div>
+                                <button
+                                    onClick={() => setGameState('result')}
+                                    className="w-full px-4 py-2 rounded-xl text-base sm:text-xl font-bold bg-gradient-to-r from-gray-400 to-gray-600 text-white transition-all transform active:scale-95 shadow-lg">
+                                    🚪 しゅうりょう
+                                </button>
+                            </div>
+
+                            <div className={`bg-white rounded-3xl shadow-2xl p-6 sm:p-12 transition-all duration-300 no-select ${
+                                feedback === 'correct' ? 'bg-green-100' : 
+                                feedback === 'wrong' ? 'bg-red-100' : ''
+                            }`}>
+                                <div className="text-center">
+                                    <div className="text-xl sm:text-3xl font-bold text-purple-600 mb-3 sm:mb-4">
+                                        {currentDan}のだん - {mode}
+                                    </div>
+                                    <div className="text-5xl sm:text-8xl font-black text-gray-800 mb-4 sm:mb-8">
+                                        {currentQuestion.dan} × {currentQuestion.multiplier} = ?
+                                    </div>
+                                    
+                                    <div className="text-4xl sm:text-6xl font-bold text-center w-full p-4 sm:p-6 border-4 border-purple-400 rounded-2xl mb-4 sm:mb-6 min-h-[80px] sm:min-h-[120px] flex items-center justify-center bg-white">
+                                        {userAnswer || '　'}
+                                    </div>
+
+                                    {feedback === 'correct' && (
+                                        <div className="text-4xl sm:text-6xl font-black text-green-600 mb-4">
+                                            🎉 せいかい！ 🎉
+                                        </div>
+                                    )}
+                                    
+                                    {feedback === 'wrong' && (
+                                        <div className="text-2xl sm:text-4xl font-bold text-red-600 mb-4">
+                                            ❌ ざんねん<br/>
+                                            <span className="text-xl sm:text-3xl">こたえは {currentQuestion.answer} だよ</span>
+                                        </div>
+                                    )}
+
+                                    {!feedback && (
+                                        <>
+                                            <div className="grid grid-cols-3 gap-3 sm:gap-4 mb-4 max-w-md mx-auto">
+                                                {[1, 2, 3, 4, 5, 6, 7, 8, 9].map(num => (
+                                                    <button
+                                                        key={num}
+                                                        onClick={() => handleNumberPad(num)}
+                                                        className="aspect-square bg-gradient-to-br from-blue-400 to-blue-600 text-white rounded-2xl text-3xl sm:text-5xl font-black shadow-lg transition-all transform active:scale-95 active:shadow-sm">
+                                                        {num}
+                                                    </button>
+                                                ))}
+                                            </div>
+                                            <div className="grid grid-cols-3 gap-3 sm:gap-4 mb-4 max-w-md mx-auto">
+                                                <button
+                                                    onClick={handleClear}
+                                                    className="aspect-square bg-gradient-to-br from-gray-400 to-gray-600 text-white rounded-2xl text-xl sm:text-2xl font-black shadow-lg transition-all transform active:scale-95 active:shadow-sm">
+                                                    クリア
+                                                </button>
+                                                <button
+                                                    onClick={() => handleNumberPad(0)}
+                                                    className="aspect-square bg-gradient-to-br from-blue-400 to-blue-600 text-white rounded-2xl text-3xl sm:text-5xl font-black shadow-lg transition-all transform active:scale-95 active:shadow-sm">
+                                                    0
+                                                </button>
+                                                <button
+                                                    onClick={handleBackspace}
+                                                    className="aspect-square bg-gradient-to-br from-red-400 to-red-600 text-white rounded-2xl text-xl sm:text-2xl font-black shadow-lg transition-all transform active:scale-95 active:shadow-sm">
+                                                    ←
+                                                </button>
+                                            </div>
+                                            <button
+                                                onClick={checkAnswer}
+                                                disabled={!userAnswer}
+                                                className={`w-full max-w-md mx-auto block px-8 py-4 rounded-2xl text-2xl sm:text-3xl font-black transition-all transform active:scale-95 ${
+                                                    userAnswer
+                                                        ? 'bg-gradient-to-r from-green-400 to-green-600 text-white shadow-xl'
+                                                        : 'bg-gray-300 text-gray-500'
+                                                }`}>
+                                                ✓ こたえる！
+                                            </button>
+                                        </>
+                                    )}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                );
+            }
+
+            if (gameState === 'result') {
+                const totalQuestions = correctCount + wrongCount;
+                const accuracy = totalQuestions > 0 ? Math.round((correctCount / totalQuestions) * 100) : 0;
+                
+                return (
+                    <div className="min-h-screen bg-gradient-to-br from-green-300 via-blue-300 to-purple-400 p-4 sm:p-8">
+                        <div className="max-w-3xl mx-auto">
+                            <div className="bg-white rounded-3xl shadow-2xl p-6 sm:p-12 text-center">
+                                <div className="text-6xl sm:text-8xl mb-4 sm:mb-6">🏆</div>
+                                <h1 className="text-4xl sm:text-6xl font-black mb-6 sm:mb-8 text-gray-800">
+                                    おつかれさま！
+                                </h1>
+                                
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-8 mb-6 sm:mb-8">
+                                    <div className="bg-gradient-to-br from-blue-100 to-blue-200 p-6 sm:p-8 rounded-2xl">
+                                        <div className="text-xl sm:text-2xl font-bold text-blue-800 mb-2">
+                                            ⏱️ タイム
+                                        </div>
+                                        <div className="text-3xl sm:text-5xl font-black text-blue-900">
+                                            {formatTime(elapsedTime)}
+                                        </div>
+                                    </div>
+                                    
+                                    <div className="bg-gradient-to-br from-purple-100 to-purple-200 p-6 sm:p-8 rounded-2xl">
+                                        <div className="text-xl sm:text-2xl font-bold text-purple-800 mb-2">
+                                            📊 せいかいりつ
+                                        </div>
+                                        <div className="text-3xl sm:text-5xl font-black text-purple-900">
+                                            {accuracy}%
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className="grid grid-cols-3 gap-3 sm:gap-6 mb-6 sm:mb-8">
+                                    <div className="bg-green-100 p-4 sm:p-6 rounded-2xl">
+                                        <div className="text-base sm:text-xl font-bold text-green-800 mb-2">
+                                            ⭕ せいかい
+                                        </div>
+                                        <div className="text-2xl sm:text-4xl font-black text-green-900">
+                                            {correctCount}
+                                        </div>
+                                    </div>
+                                    
+                                    <div className="bg-red-100 p-4 sm:p-6 rounded-2xl">
+                                        <div className="text-base sm:text-xl font-bold text-red-800 mb-2">
+                                            ❌ まちがい
+                                        </div>
+                                        <div className="text-2xl sm:text-4xl font-black text-red-900">
+                                            {wrongCount}
+                                        </div>
+                                    </div>
+                                    
+                                    <div className="bg-yellow-100 p-4 sm:p-6 rounded-2xl">
+                                        <div className="text-base sm:text-xl font-bold text-yellow-800 mb-2">
+                                            📝 もんだい
+                                        </div>
+                                        <div className="text-2xl sm:text-4xl font-black text-yellow-900">
+                                            {totalQuestions}
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {accuracy === 100 && (
+                                    <div className="text-3xl sm:text-5xl font-black text-yellow-500 mb-6 sm:mb-8">
+                                        🎊 パーフェクト！ 🎊
+                                    </div>
+                                )}
+
+                                <button
+                                    onClick={() => {
+                                        setGameState('menu');
+                                        setMode(null);
+                                        setDanSelection(null);
+                                    }}
+                                    className="w-full p-6 sm:p-8 rounded-3xl text-2xl sm:text-4xl font-black bg-gradient-to-r from-pink-500 to-red-500 text-white transition-all transform active:scale-95 shadow-2xl">
+                                    🔄 もういちど
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                );
+            }
+
+            return null;
+        }
+
+        ReactDOM.render(<KukuPractice />, document.getElementById('root'));
+    </script>
+</body>
+</html>
